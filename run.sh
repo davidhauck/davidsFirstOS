@@ -2,7 +2,9 @@
  
 # This script can be used to quickly test MultiBoot-compliant
 # kernels.
- 
+
+make
+
 # ---- begin config params ----
  
 harddisk_image_size=$((4*1024*1024)) # 4 megabytes
