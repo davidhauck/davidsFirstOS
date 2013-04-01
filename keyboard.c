@@ -1,4 +1,5 @@
-void PrintTest(volatile unsigned char * screen) {
-   screen[0] = 67;
+void PrintTest(volatile unsigned char * screen) 
+{
+   screen[0] = 65;
 }
 
