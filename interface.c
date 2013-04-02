@@ -1,23 +1,44 @@
 #include "common.c"
 
+
+void scroll();
+void putChar(char);
+void println(char* output);
+
+#ifndef INTERFACE_C
+#define INTERFACE_C
+
 unsigned int cursorY = 0;
 unsigned int cursorX = 0;
 
 
-void scroll();
-static void moveCursor();
-void putChar(char);
-void println(char* output);
-
+static void moveCursor()
+{
+	unsigned short cursorLocation = cursorY * 80 + cursorX;
+	outb(0x3D4, 14);
+	outb(0x3D5, cursorLocation >> 8);
+	outb(0x3D4, 15);
+	outb(0x3D5, cursorLocation);
+}
 
 void println(char * output)
 {
-	unsigned int i;
-	for (i = 0; i <= sizeof(output); i++)
+	unsigned int i = 0;
+	while(output[i] != 0)
 	{
 		putChar(output[i]);
+		i++;
 	}
 	putChar('\n');
+}
+
+void  putDec(int output)
+{
+	output = 0;
+	while(output)
+	{
+		asm("nop");
+	}
 }
 
 void putChar(char c)
@@ -70,11 +91,4 @@ void scroll(volatile unsigned char * videoram)
 	}
 }
 
-static void moveCursor()
-{
-	unsigned short cursorLocation = cursorY * 80 + cursorX;
-	outb(0x3D4, 14);
-	outb(0x3D5, cursorLocation >> 8);
-	outb(0x3D4, 15);
-	outb(0x3D5, cursorLocation);
-}
+#endif

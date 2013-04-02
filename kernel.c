@@ -1,10 +1,12 @@
 #include <stdint.h>
 #include "keyboard.c" 
 #include "interface.c"
+#include "descriptorTables.c"
+#include "isr.c"
 
 void clearScreen();
 
-void kmain(void)
+void main(void)
 {
 	extern uint32_t magic;
 
@@ -26,10 +28,9 @@ void kmain(void)
 	/* Print a letter to screen to see everything is working: */
 
 	clearScreen();
-	char * words = "hello";
-	putChar('Q');
-	println(words);
-	putChar('W');
+	initDescriptorTables();
+	asm volatile ("int $0x3");
+	while (1);
 }
 
 void clearScreen()
