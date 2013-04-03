@@ -1,4 +1,0 @@
-void PrintTest(volatile unsigned char * screen) 
-{
-}
-
