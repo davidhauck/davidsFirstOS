@@ -17,12 +17,12 @@ static void timer_callback(registers_t regs)
 {
 	 regs = regs;
     tick++;
-    monitor_write("Tick: ");
-    monitor_write_dec(tick);
-    monitor_write("\n");
-	 monitor_write("Tick: ");
-    monitor_write_dec(tick);
-    monitor_write("\n");
+	 if (tick % 200 == 0)
+	 {
+    	 monitor_write("Tick: ");
+	 	 monitor_write_dec(tick / 200);
+	 	 monitor_put('\n');
+	 }
 }
 
 void init_timer(u32int frequency)

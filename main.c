@@ -4,6 +4,7 @@
 #include "monitor.c"
 #include "descriptor_tables.c"
 #include "timer.c"
+#include "kb.c"
 
 int main(void)
 {
@@ -18,6 +19,7 @@ int main(void)
     asm volatile("int $0x4");
 
     init_timer(50);
+    init_keyboard();
     asm volatile("sti");
 
 	 while(1)
