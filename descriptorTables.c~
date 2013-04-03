@@ -1,8 +1,7 @@
 #include "common.c"
 #include "interface.c"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "isr.c"
+#include <stddef.h>
 struct gdtEntryStruct
 {
 	unsigned short limitLow;
@@ -71,6 +70,22 @@ extern void isr28();
 extern void isr29();
 extern void isr30();
 extern void isr31();
+extern void irq0 ();
+extern void irq1 ();
+extern void irq2 ();
+extern void irq3 ();
+extern void irq4 ();
+extern void irq5 ();
+extern void irq6 ();
+extern void irq7 ();
+extern void irq8 ();
+extern void irq9 ();
+extern void irq10();
+extern void irq11();
+extern void irq12();
+extern void irq13();
+extern void irq14();
+extern void irq15();
 
 void initDescriptorTables();
 
@@ -87,12 +102,20 @@ gdtPtrT gdtPtr;
 idtEntryT idtEntries[256];
 idtPtrT idtPtr;
 
+void * memset (void *str, int c, size_t len)
+{
+  register char *st = str;
+
+  while (len-- > 0)
+    *st++ = c;
+  return str;
+}
+
 void initDescriptorTables()
 {
-	println("about to create tables");
 	initGdt();
 	initIdt();
-	println("created tables");
+    memset(&interruptHandlers, 0, sizeof(isrT)*256);
 }
 
 static void initGdt()
@@ -115,17 +138,28 @@ static void initIdt()
 	idtPtr.base = (unsigned int)&idtEntries;
 
 	memset(&idtEntries, 0, sizeof(idtEntryT)*256);
+
+	outb(0x20, 0x11);
+	outb(0xA0, 0x11);
+	outb(0x21, 0x20);
+	outb(0xA1, 0x28);
+	outb(0x21, 0x04);
+	outb(0xA1, 0x02);
+	outb(0x21, 0x01);
+	outb(0xA1, 0x01);
+	outb(0x21, 0x0);
+	outb(0xA1, 0x0);
 	
-	idtSetGate(0, (unsigned int)isr0, 0x08, 0x8E);
-	idtSetGate(1, (unsigned int)isr1, 0x08, 0x8E);
-	idtSetGate(2, (unsigned int)isr2, 0x08, 0x8E);
-	idtSetGate(3, (unsigned int)isr3, 0x08, 0x8E);
-	idtSetGate(4, (unsigned int)isr4, 0x08, 0x8E);
-	idtSetGate(5, (unsigned int)isr5, 0x08, 0x8E);
-	idtSetGate(6, (unsigned int)isr6, 0x08, 0x8E);
-	idtSetGate(7, (unsigned int)isr7, 0x08, 0x8E);
-	idtSetGate(8, (unsigned int)isr8, 0x08, 0x8E);
-	idtSetGate(9, (unsigned int)isr9, 0x08, 0x8E);
+	idtSetGate( 0, (unsigned int)isr0 , 0x08, 0x8E);
+	idtSetGate( 1, (unsigned int)isr1 , 0x08, 0x8E);
+	idtSetGate( 2, (unsigned int)isr2 , 0x08, 0x8E);
+	idtSetGate( 3, (unsigned int)isr3 , 0x08, 0x8E);
+	idtSetGate( 4, (unsigned int)isr4 , 0x08, 0x8E);
+	idtSetGate( 5, (unsigned int)isr5 , 0x08, 0x8E);
+	idtSetGate( 6, (unsigned int)isr6 , 0x08, 0x8E);
+	idtSetGate( 7, (unsigned int)isr7 , 0x08, 0x8E);
+	idtSetGate( 8, (unsigned int)isr8 , 0x08, 0x8E);
+	idtSetGate( 9, (unsigned int)isr9 , 0x08, 0x8E);
 	idtSetGate(10, (unsigned int)isr10, 0x08, 0x8E);
 	idtSetGate(11, (unsigned int)isr11, 0x08, 0x8E);
 	idtSetGate(12, (unsigned int)isr12, 0x08, 0x8E);
@@ -148,6 +182,22 @@ static void initIdt()
 	idtSetGate(29, (unsigned int)isr29, 0x08, 0x8E);
 	idtSetGate(30, (unsigned int)isr30, 0x08, 0x8E);
 	idtSetGate(31, (unsigned int)isr31, 0x08, 0x8E);
+	idtSetGate(32, (unsigned int)irq0, 0x08, 0x8E);
+	idtSetGate(33, (unsigned int)irq1, 0x08, 0x8E);
+	idtSetGate(34, (unsigned int)irq2, 0x08, 0x8E);
+	idtSetGate(35, (unsigned int)irq3, 0x08, 0x8E);
+	idtSetGate(36, (unsigned int)irq4, 0x08, 0x8E);
+	idtSetGate(37, (unsigned int)irq5, 0x08, 0x8E);
+	idtSetGate(38, (unsigned int)irq6, 0x08, 0x8E);
+	idtSetGate(39, (unsigned int)irq7, 0x08, 0x8E);
+	idtSetGate(40, (unsigned int)irq8, 0x08, 0x8E);
+	idtSetGate(41, (unsigned int)irq9, 0x08, 0x8E);
+	idtSetGate(42, (unsigned int)irq10, 0x08, 0x8E);
+	idtSetGate(43, (unsigned int)irq11, 0x08, 0x8E);
+	idtSetGate(44, (unsigned int)irq12, 0x08, 0x8E);
+	idtSetGate(45, (unsigned int)irq13, 0x08, 0x8E);
+	idtSetGate(46, (unsigned int)irq14, 0x08, 0x8E);
+	idtSetGate(47, (unsigned int)irq15, 0x08, 0x8E);
 
 	idt_flush((unsigned int)&idtPtr);
 }

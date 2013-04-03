@@ -3,6 +3,7 @@
 #include "interface.c"
 #include "descriptorTables.c"
 #include "isr.c"
+#include "timer.c"
 
 void clearScreen();
 
@@ -29,8 +30,7 @@ void main(void)
 
 	clearScreen();
 	initDescriptorTables();
-	asm volatile ("int $0x3");
-	while (1);
+	initTimer(50);
 }
 
 void clearScreen()
