@@ -5,6 +5,7 @@
 #include "descriptor_tables.c"
 #include "timer.c"
 #include "kb.c"
+#include "paging.c"
 
 int main(void)
 {
@@ -15,15 +16,25 @@ int main(void)
     // Write out a sample string
     monitor_write("Hello, world!\n");
 
-    asm volatile("int $0x3");
-    asm volatile("int $0x4");
+//these will force interrupts to occur
+//    asm volatile("int $0x3");
+//    asm volatile("int $0x4");
 
     init_timer(50);
     init_keyboard();
-    asm volatile("sti");
+	initialize_paging();
+    asm volatile("sti"); //enable interrutps
 
-	 while(1)
+//these force a page fault to occur
+//	u32int *ptr = (u32int*)0xA0000000;
+//	u32int do_page_fault = *ptr;
+
+//so the compiler doesnt throw an error
+//	do_page_fault = 0;
+//	do_page_fault++;
+
+	//wait for something to happen
+ 	while(1)
 		asm("hlt");
-
-    return 0;
+	return 0;
 }
