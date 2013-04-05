@@ -1,7 +1,7 @@
 #include <stddef.h>
 
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef COMMON_C
+#define COMMON_C
 
 // make type declarations nicer
 typedef unsigned int   u32int;
@@ -74,8 +74,6 @@ int strcmp(char *str1, char *str2)
       return failed;
 }
 
-// Copy the NULL-terminated string src into dest, and
-// return dest.
 void strcpy(char *dest, const char *src)
 {
     do
@@ -85,4 +83,4 @@ void strcpy(char *dest, const char *src)
     while (*src != 0);
 }
 
-#endif // COMMON_H
+#endif

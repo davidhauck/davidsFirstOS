@@ -1,8 +1,8 @@
 #include "common.c"
 #include "isr.c"
 
-#ifndef DESCRIPTOR_TABLES_H
-#define DESCRIPTOR_TABLES_H
+#ifndef DESCRIPTOR_TABLES_C
+#define DESCRIPTOR_TABLES_C
 
 void init_descriptor_tables();
 
@@ -177,6 +177,7 @@ static void init_idt()
     outb(0x21, 0x0);
     outb(0xA1, 0x0);
 
+	//set up the isr and irq
     idt_set_gate( 0, (u32int)isr0 , 0x08, 0x8E);
     idt_set_gate( 1, (u32int)isr1 , 0x08, 0x8E);
     idt_set_gate( 2, (u32int)isr2 , 0x08, 0x8E);

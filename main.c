@@ -1,6 +1,3 @@
-// main.c -- Defines the C-code kernel entry point, calls initialisation routines.
-//           Made for JamesM's tutorials <www.jamesmolloy.co.uk>
-
 #include "monitor.c"
 #include "descriptor_tables.c"
 #include "timer.c"
@@ -35,6 +32,6 @@ int main(void)
 
 	//wait for something to happen
  	while(1)
-		asm("hlt");
+		asm("hlt"); //pause until next interrupt
 	return 0;
 }

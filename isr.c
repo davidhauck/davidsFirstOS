@@ -7,8 +7,8 @@
 #include "common.c"
 #include "monitor.c"
 
-#ifndef ISR_H
-#define ISR_H
+#ifndef ISR_C
+#define ISR_C
 
 // A few defines to make life a little easier
 #define IRQ0 32

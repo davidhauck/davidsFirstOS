@@ -1,10 +1,4 @@
-;
-; interrupt.s -- Contains interrupt service routine wrappers.
-;                Based on Bran's kernel development tutorials.
-;                Rewritten for JamesM's kernel development tutorials.
-
-; This macro creates a stub for an ISR which does NOT pass it's own
-; error code (adds a dummy errcode byte).
+;doesnt pass its own error code
 %macro ISR_NOERRCODE 1
   global isr%1
   isr%1:
@@ -14,8 +8,7 @@
     jmp isr_common_stub         ; Go to our common handler code.
 %endmacro
 
-; This macro creates a stub for an ISR which passes it's own
-; error code.
+; stub for an ISR which passes it's own error code
 %macro ISR_ERRCODE 1
   global isr%1
   isr%1:
@@ -24,8 +17,7 @@
     jmp isr_common_stub
 %endmacro
 
-; This macro creates a stub for an IRQ - the first parameter is
-; the IRQ number, the second is the ISR number it is remapped to.
+;stub for irq
 %macro IRQ 2
   global irq%1
   irq%1:
@@ -35,6 +27,7 @@
     jmp irq_common_stub
 %endmacro
         
+;8, and 10-14 pass their own error codes
 ISR_NOERRCODE 0
 ISR_NOERRCODE 1
 ISR_NOERRCODE 2
@@ -84,12 +77,8 @@ IRQ  13,    45
 IRQ  14,    46
 IRQ  15,    47
 
-; In isr.c
 extern isr_handler
 
-; This is our common ISR stub. It saves the processor state, sets
-; up for kernel mode segments, calls the C-level fault handler,
-; and finally restores the stack frame.
 isr_common_stub:
     pusha                    ; Pushes edi,esi,ebp,esp,ebx,edx,ecx,eax
 
@@ -115,12 +104,9 @@ isr_common_stub:
     sti
     iret           ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
 
-; In isr.c
+
 extern irq_handler
 
-; This is our common IRQ stub. It saves the processor state, sets
-; up for kernel mode segments, calls the C-level fault handler,
-; and finally restores the stack frame.
 irq_common_stub:
     pusha                    ; Pushes edi,esi,ebp,esp,ebx,edx,ecx,eax
 
